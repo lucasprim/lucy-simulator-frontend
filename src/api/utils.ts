@@ -1,6 +1,7 @@
+import type { PageData } from "@/types";
 import type { AxiosResponse } from "axios";
 
-export function getPageData(response: AxiosResponse) {
+export function getPageData(response: AxiosResponse): PageData {
   return {
     total: response.data.total,
     currentPage: response.data.currentPage,

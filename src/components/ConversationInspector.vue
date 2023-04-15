@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { getExternalConversationMessages } from '@/api/externalConversationMessages';
-import { useExperimentDrawerStore } from '@/stores/experimentDrawer';
-import type { ExternalConversationMessage } from '@/types';
-import { storeToRefs } from 'pinia';
-import { ref, watch } from 'vue';
+import { getExternalConversationMessages } from '@/api/externalConversationMessages'
+import { useExperimentDrawerStore } from '@/stores/experimentDrawer'
+import type { ExternalConversationMessage } from '@/types'
+import { storeToRefs } from 'pinia'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   externalConversationExternalId?: number
@@ -14,7 +14,10 @@ const messages = ref<ExternalConversationMessage[]>([])
 watch(
   () => props.externalConversationExternalId,
   async (newValue: number | undefined) => {
-    if (!newValue) { messages.value = []; return }
+    if (!newValue) {
+      messages.value = []
+      return
+    }
     messages.value = await getExternalConversationMessages(newValue)
     rootElement.value?.scrollTo(0, 0)
   }
@@ -26,9 +29,7 @@ const experimentStore = useExperimentDrawerStore()
 const { open } = storeToRefs(experimentStore)
 
 const addMessagesToExperiment = () => {
-  const msg = messages.value.map((m) => (
-    `${m.participant_type}: ${m.body}`
-  )).join("\n")
+  const msg = messages.value.map((m) => `${m.participant_type}: ${m.body}`).join('\n')
 
   experimentStore.addAvailableVariable('conversation', msg)
   open.value = true
@@ -36,44 +37,47 @@ const addMessagesToExperiment = () => {
 </script>
 
 <template>
-  <div
-    ref="rootElement"
-    class="h-full w-full text-sm"
-  >
-    <ol class="p-4">
+  <div ref="rootElement" class="h-full w-full text-sm flex overflow-hidden flex-col">
+    <ol class="p-4 flex-grow overflow-y-auto">
       <li
         v-for="(message, index) in messages"
         :key="message.id"
         :class="[
           'w-full relative flex',
-          (messages[index - 1] !== undefined && message.participant_type != messages[index - 1].participant_type) ? 'mt-4' : 'mt-px'
+          messages[index - 1] !== undefined &&
+          message.participant_type != messages[index - 1].participant_type
+            ? 'mt-4'
+            : 'mt-px'
         ]"
       >
         <div
           :class="['flex-grow', message.participant_type === 'client' ? '' : 'order-last']"
-          style="min-width: 120px;"
+          style="min-width: 120px"
         >
           &nbsp;
         </div>
         <div
           :class="[
             ' text-white py-1 px-2 rounded-md text-ellipsis overflow-hidden shadow-sm',
-            message.participant_type === 'bot' ? 'bg-gray-500' : '',
-            message.participant_type === 'client' ? 'text-right bg-blue-500' : 'text-left bg-green-500'
-          ]">
-            <span v-if="message.participant_type === 'bot'">🤖</span>
-            {{ message.body }}
-            <div v-if="message.body === ''">[Áudio ou Imagem]</div>
+            message.participant_type === 'bot' ? '!bg-gray-500' : '',
+            message.participant_type === 'client'
+              ? 'text-right bg-blue-500'
+              : 'text-left bg-green-500'
+          ]"
+        >
+          <span v-if="message.participant_type === 'bot'">🤖</span>
+          {{ message.body }}
+          <div v-if="message.body === ''">[Áudio ou Imagem]</div>
         </div>
       </li>
     </ol>
-    <div>
-      <a
-        href="#"
+    <div class="bg-gray-200 text-xs h-8 items-center flex justify-end px-2 flex-shrink-0">
+      <button
+        class="border border-gray-400 px-2 py-px shadow-sm rounded-sm bg-gray-200 text-gray-600"
         @click.prevent="(e) => addMessagesToExperiment()"
       >
-        Var
-      </a>
+        Experimentar Prompt
+      </button>
     </div>
   </div>
 </template>
