@@ -2,32 +2,93 @@
 import UiSelect from '@/components/base/UiSelect.vue'
 import { DocumentIcon } from '@heroicons/vue/24/outline'
 import { ChevronRightIcon, ChevronDownIcon, PlusCircleIcon } from '@heroicons/vue/24/solid'
-import { ref } from 'vue'
-import Document from '@/components/library/Document.vue'
+import { ref, watch } from 'vue'
+import {
+  createCollection,
+  createLibrary,
+  getCollections,
+  getLibraries,
+  createDocument
+} from '@/api/documents.js'
+import type { DocumentLibrary, DocumentCollection, Document } from '@/types'
+import LibraryDocument from '@/components/library/LibraryDocument.vue'
 
-const libraries = ref([
-  { id: 1, name: 'GPS' },
-  { id: 2, name: 'RC Ton' },
-  { id: 3, name: 'RC Stone' }
-])
+const libraries = ref<DocumentLibrary[]>([])
+const selectedLibraryId = ref<number>()
 
-const selectedLibraryId = ref(1)
+const loadLibraries = async (selectId?: number) => {
+  libraries.value = await getLibraries()
+  selectedLibraryId.value =
+    selectId ?? (libraries.value.length > 0 ? libraries.value[0].id : undefined)
+}
+await loadLibraries()
 
-const collections = ref([
-  { id: 1, library_id: 1, name: 'Contratos', open: true },
-  { id: 2, library_id: 1, name: 'Planos', open: true }
-])
+const createLibraryAction = async () => {
+  const name = prompt('Nome da nova library')
 
-const documents = ref([
-  { id: 1, name: 'Planos Q&A 1', collection_id: 2 },
-  { id: 2, name: 'Planos Q&A 2', collection_id: 2 },
-  { id: 3, name: 'Contratos Q&A', collection_id: 1 }
-])
+  if (!name || name === '') {
+    return
+  }
 
-const selectedDocumentId = ref(1)
+  const result = await createLibrary({ name })
+  await loadLibraries(result.id)
+}
+
+type DocumentCollectionView = DocumentCollection & { open: boolean }
+
+const collections = ref<DocumentCollectionView[]>([])
+const documents = ref<Document[]>([])
+const selectedDocumentId = ref<number>()
+
+const loadCollections = async () => {
+  if (!selectedLibraryId.value) {
+    collections.value = []
+    return
+  }
+  const response = await getCollections(selectedLibraryId.value)
+  collections.value = response.collections.map((c) => ({
+    ...c,
+    open: true
+  }))
+  documents.value = response.documents
+  selectedDocumentId.value = documents.value.length > 0 ? documents.value[0].id : undefined
+}
+
+watch(selectedLibraryId, loadCollections, { immediate: true })
+
+const createCollectionAction = async () => {
+  const name = prompt('Nome da nova collection')
+
+  if (!name || name === '' || !selectedLibraryId.value) {
+    return
+  }
+
+  await createCollection({ name, document_library_id: selectedLibraryId.value })
+  await loadCollections()
+}
+
+const createDocumentAction = async (collectionId: number) => {
+  const name = prompt('Nome do novo documento')
+
+  if (!name || name === '' || !collectionId) {
+    return
+  }
+
+  await createDocument({ name, document_collection_id: collectionId })
+  await loadCollections()
+}
 
 const documentsForCollection = (collectionId: number) => {
-  return documents.value.filter((d) => d.collection_id === collectionId)
+  return documents.value.filter((d) => d.document_collection_id === collectionId)
+}
+
+const updateDocumentName = (newName: string) => {
+  documents.value = documents.value.map((d) => {
+    if (d.id === selectedDocumentId.value) {
+      return { ...d, name: newName }
+    }
+    return d
+  })
 }
 </script>
 
@@ -40,7 +101,10 @@ const documentsForCollection = (collectionId: number) => {
       </option>
     </UiSelect>
 
-    <PlusCircleIcon class="inline-block h-6 w-6 text-green-500 ml-1" />
+    <PlusCircleIcon
+      class="inline-block h-6 w-6 text-green-500 ml-1 cursor-pointer"
+      @click.prevent="createLibraryAction"
+    />
   </div>
   <div class="grid grid-cols-12 rounded-md border">
     <div class="col-span-4 bg-gray-100 p-2 rounded-tl-md rounded-bl-md">
@@ -59,7 +123,10 @@ const documentsForCollection = (collectionId: number) => {
             <span class="font-semibold ml-2">
               {{ collection.name }}
             </span>
-            <PlusCircleIcon class="inline-block h-4 w-4 text-gray-500 ml-1" />
+            <PlusCircleIcon
+              class="inline-block h-4 w-4 text-gray-500 ml-1"
+              @click.prevent="(_e: any) => createDocumentAction(collection.id)"
+            />
           </a>
           <ul v-if="collection.open" class="ml-3 space-y-1">
             <li
@@ -84,11 +151,33 @@ const documentsForCollection = (collectionId: number) => {
         </li>
       </ul>
       <div class="text-right">
-        <a href="#" class="text-sm underline">+ Nova Coleção</a>
+        <a href="#" class="text-sm underline" @click.prevent="createCollectionAction"
+          >+ Nova Coleção</a
+        >
       </div>
     </div>
     <div class="col-span-8 p-2">
-      <Document />
+      <div v-if="!selectedDocumentId" class="text-center">
+        <div class="text-gray-500">Nenhum documento selecionado</div>
+      </div>
+      <div v-else>
+        <Suspense>
+          <LibraryDocument
+            :document-id="selectedDocumentId"
+            @document-changed-name="
+              (newName) => {
+                updateDocumentName(newName)
+              }
+            "
+          />
+
+          <template #fallback>
+            <div class="text-center">
+              <div class="text-gray-500">Carregando...</div>
+            </div>
+          </template>
+        </Suspense>
+      </div>
     </div>
   </div>
 </template>

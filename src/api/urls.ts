@@ -15,7 +15,17 @@ const URLS: Record<string, (...args: any[]) => string> = {
   generations: () => `/conversations/generations`,
   createConversation: () => `/conversations`,
   sendMessage: (identifier: string) => `/conversations/${identifier}/messages`,
-  getMessages: (identifier: string) => `/conversations/${identifier}/messages`
+  getMessages: (identifier: string) => `/conversations/${identifier}/messages`,
+  createLibrary: () => `/documents/libraries`,
+  getLibraries: () => `/documents/libraries`,
+  createCollection: () => `/documents/collections`,
+  getCollections: (libraryId: number) => `/documents/collections/${libraryId}`,
+  createDocument: () => `/documents`,
+  getDocument: (documentId: number) => `/documents/${documentId}`,
+  createDocumentVersion: (documentId: number) => `/documents/${documentId}/versions`,
+  updateDocument: (documentId: number) => `/documents/${documentId}`,
+  getDocumentVersion: (documentId: number, documentVersion: number) =>
+    `/documents/${documentId}/versions/${documentVersion}`
 }
 
 export function url(url: string, options?: Record<string, any>, ...args: any[]) {

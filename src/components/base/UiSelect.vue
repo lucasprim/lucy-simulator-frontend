@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps<{
-  modelValue: string | number
+  modelValue?: string | number
 }>()
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: string | number): void
+  (event: 'update:modelValue', value: string | number | undefined): void
 }>()
 
-const thisModel = ref(props.modelValue)
-
-watch(thisModel, (value) => {
-  emit('update:modelValue', value)
+const thisModel = computed({
+  get: () => props.modelValue,
+  set: (value: string | number | undefined) => emit('update:modelValue', value)
 })
 </script>
 

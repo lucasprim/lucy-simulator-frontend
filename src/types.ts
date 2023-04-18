@@ -1,4 +1,4 @@
-import type { Dayjs } from "dayjs"
+import type { Dayjs } from 'dayjs'
 
 export interface PageData {
   total: number
@@ -34,9 +34,9 @@ export interface ExternalConversationMessage {
 }
 
 export interface PromptExperimentMessage {
-  id?: number,
+  id?: number
   order: number
-  role: 'system' |  'user' | 'assistant'
+  role: 'system' | 'user' | 'assistant'
   content: string
   parsedContent?: string
 }
@@ -46,19 +46,43 @@ export interface PromptExperimentResult {
 }
 
 export interface PromptExperiment {
-  id?: number,
-  name: string,
-  model: string,
+  id?: number
+  name: string
+  model: string
   modelConfig: any
   created_at?: Dayjs
   updated_at?: Dayjs
 }
 
 export interface PromptExperimentSnapshot {
-  id?: number,
-  prompt_experiment_id?: number,
-  name: string,
-  star: boolean,
-  created_at?: Dayjs,
+  id?: number
+  prompt_experiment_id?: number
+  name: string
+  star: boolean
+  created_at?: Dayjs
   updated_at?: Dayjs
+}
+
+export interface DocumentLibrary {
+  id: number
+  name: string
+}
+
+export interface DocumentCollection {
+  id: number
+  document_library_id: number
+  name: string
+}
+
+export interface Document {
+  id: number
+  document_collection_id: number
+  name: string
+}
+
+export interface DocumentVersion {
+  id: number
+  document_id: number
+  created_at: string
+  content?: string
 }
