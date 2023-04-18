@@ -18,6 +18,12 @@ export interface ExternalConversation {
   completed_at: Dayjs
 }
 
+export interface ConversationMessage {
+  id?: number
+  role: 'system' | 'user' | 'assistant' | 'representative'
+  content: string
+}
+
 export interface ExternalConversationMessage {
   id: number
   external_id: string

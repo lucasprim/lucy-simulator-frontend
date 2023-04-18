@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BrowserView from '../views/BrowserView.vue'
+import SimulatorView from '@/views/SimulatorView.vue'
+import LibraryView from '@/views/LibraryView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,6 +12,22 @@ const router = createRouter({
       component: BrowserView,
       meta: {
         title: 'Conversations Browser'
+      }
+    },
+    {
+      path: '/simulator',
+      name: 'simulator',
+      component: SimulatorView,
+      meta: {
+        title: 'Conversations Simulator'
+      }
+    },
+    {
+      path: '/library',
+      name: 'library',
+      component: LibraryView,
+      meta: {
+        title: 'Library'
       }
     }
   ]

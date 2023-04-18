@@ -11,7 +11,11 @@ const URLS: Record<string, (...args: any[]) => string> = {
   updatePromptExperiment: (id: number) => `/experiments/prompt/${id}`,
   createPromptExperiment: () => `/experiments/prompt`,
   filterableValues: (entity: string, field: string) =>
-    `/filter/values?table=${entity}&field=${field}`
+    `/filter/values?table=${entity}&field=${field}`,
+  generations: () => `/conversations/generations`,
+  createConversation: () => `/conversations`,
+  sendMessage: (identifier: string) => `/conversations/${identifier}/messages`,
+  getMessages: (identifier: string) => `/conversations/${identifier}/messages`
 }
 
 export function url(url: string, options?: Record<string, any>, ...args: any[]) {
