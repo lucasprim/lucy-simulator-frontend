@@ -86,3 +86,10 @@ export interface DocumentVersion {
   created_at: string
   content?: string
 }
+
+export interface DocumentFragment {
+  id: number
+  document_version_id: number
+  content: string
+  processor: string
+}

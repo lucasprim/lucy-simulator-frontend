@@ -25,7 +25,11 @@ const URLS: Record<string, (...args: any[]) => string> = {
   createDocumentVersion: (documentId: number) => `/documents/${documentId}/versions`,
   updateDocument: (documentId: number) => `/documents/${documentId}`,
   getDocumentVersion: (documentId: number, documentVersion: number) =>
-    `/documents/${documentId}/versions/${documentVersion}`
+    `/documents/${documentId}/versions/${documentVersion}`,
+  getDocumentProcessors: () => `/documents/processors`,
+  processDocument: (documentVersionId: number, processor: string) =>
+    `/documents/processors/${documentVersionId}/${processor}`,
+  getDocumentFragments: (documentVersionId: number) => `/documents/fragments/${documentVersionId}`
 }
 
 export function url(url: string, options?: Record<string, any>, ...args: any[]) {

@@ -125,8 +125,8 @@ watch(
         @keypress.enter.prevent="sendMessageAction"
       ></textarea>
       <div class="self-center">
-        <ButtonPrimary size="md" color="blue" @click.prevent="sendMessageAction"
-          >Enviar</ButtonPrimary
+        <UiButtonPrimary size="md" color="blue" @click.prevent="sendMessageAction"
+          >Enviar</UiButtonPrimary
         >
       </div>
     </div>

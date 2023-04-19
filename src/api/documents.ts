@@ -44,3 +44,15 @@ export async function getDocumentVersion(documentId: number, documentVersion: nu
 export async function createDocumentVersion(documentId: number, data: { content: string }) {
   return (await api.post(url('createDocumentVersion', {}, documentId), data)).data
 }
+
+export async function getDocumentProcessors() {
+  return (await api.get(url('getDocumentProcessors'))).data
+}
+
+export async function processDocument(documentVersionId: number, processor: string) {
+  return (await api.post(url('processDocument', {}, documentVersionId, processor))).data
+}
+
+export async function getDocumentFragments(documentVersionId: number) {
+  return (await api.get(url('getDocumentFragments', {}, documentVersionId))).data
+}

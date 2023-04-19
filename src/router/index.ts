@@ -23,11 +23,13 @@ const router = createRouter({
       }
     },
     {
-      path: '/library',
-      name: 'library',
+      path: '/library/:id?/:tab?',
       component: LibraryView,
+      name: 'library',
+      props: true,
       meta: {
-        title: 'Library'
+        title: 'Library',
+        rootAnchor: 'Library'
       }
     }
   ]
