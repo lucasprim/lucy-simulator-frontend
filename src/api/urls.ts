@@ -29,7 +29,16 @@ const URLS: Record<string, (...args: any[]) => string> = {
   getDocumentProcessors: () => `/documents/processors`,
   processDocument: (documentVersionId: number, processor: string) =>
     `/documents/processors/${documentVersionId}/${processor}`,
-  getDocumentFragments: (documentVersionId: number) => `/documents/fragments/${documentVersionId}`
+  getDocumentFragments: (documentVersionId: number) => `/documents/fragments/${documentVersionId}`,
+  getStores: () => `/documents/stores`,
+  getStoreTypes: () => `/documents/stores/types`,
+  createStore: () => `/documents/stores`,
+  getDocumentStatusesFor: (storeId: number, libraryId: number) =>
+    `/documents/stores/${storeId}/${libraryId}/document_statuses`,
+  storeDocument: (storeId: number, documentId: number) =>
+    `/documents/stores/${storeId}/storeDocument/${documentId}`,
+  queryStore: (storeId: number, query: string) =>
+    `/documents/stores/${storeId}/query?query=${query}`
 }
 
 export function url(url: string, options?: Record<string, any>, ...args: any[]) {

@@ -93,3 +93,23 @@ export interface DocumentFragment {
   content: string
   processor: string
 }
+
+export interface DocumentStore {
+  id: number
+  name: string
+  store_type: string
+}
+
+export interface StoreDocumentStatus {
+  store_id: number
+  document_id: number
+  latest_document_version_at?: Dayjs
+  stored_version_at?: Dayjs
+  latest_version_fragments?: number
+  stored_fragments?: number
+  status: 'current' | 'outdated' | 'not_stored'
+}
+
+export interface StoreQueryResult extends DocumentFragment {
+  distance: number
+}
