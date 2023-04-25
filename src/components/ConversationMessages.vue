@@ -10,7 +10,7 @@ defineProps<{
   <ol>
     <li
       v-for="(message, index) in messages"
-      :key="message.content"
+      :key="message.id ?? message.content"
       :class="[
         'w-full relative flex',
         messages[index - 1] !== undefined && message.role != messages[index - 1].role
@@ -32,7 +32,7 @@ defineProps<{
         ]"
       >
         <span v-if="message.role === 'assistant'">🤖</span>
-        <span v-html="message.content.replace(/\n/g, '<br />')"></span>
+        <span v-html="(message.content ?? '').replace(/\n/g, '<br />')"></span>
         <div v-if="message.content === ''">[Áudio ou Imagem]</div>
       </div>
     </li>

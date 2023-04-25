@@ -34,7 +34,8 @@ watch(
       messages.value = []
       return
     }
-    messages.value = await getExternalConversationMessages(newValue)
+    const conversationMessages = await getExternalConversationMessages(newValue)
+    messages.value = conversationMessages
     rootElement.value?.scrollTo(0, 0)
   }
 )

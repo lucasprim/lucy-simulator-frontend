@@ -36,8 +36,6 @@ const messages = ref<ConversationMessage[]>([])
 const userMessage = ref<string>('')
 
 const scrollToLast = () => {
-  console.log('scrolling to last')
-  console.log(messagesContainer.value?.scrollHeight)
   messagesContainer.value?.scrollTo(0, messagesContainer.value.scrollHeight)
 }
 

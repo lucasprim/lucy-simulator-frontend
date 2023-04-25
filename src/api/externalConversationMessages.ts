@@ -5,12 +5,10 @@ import dayjs from 'dayjs'
 
 export async function getExternalConversationMessages(externalConversationId: number) {
   const response = await axios.get(url('externalConversationMessages', {}, externalConversationId))
-  const messages: ExternalConversationMessage[] = response.data.map((c: any) => (
-    {
-      ...c,
-      created_at: dayjs(c.created_at),
-    }
-  ))
+  const messages: ExternalConversationMessage[] = response.data.map((c: any) => ({
+    ...c,
+    created_at: dayjs(c.created_at)
+  }))
 
   return messages
 }
